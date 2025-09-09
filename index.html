@@ -3,72 +3,1200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Story Tool</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>User Story Requirement Writing Tool</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f7fa;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background-color: #4f46e5;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #4338ca;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+
+        .btn-danger {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #b91c1c;
+        }
+
+        .btn-small {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        /* Navigation */
+        .tab-navigation {
+            background-color: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            display: flex;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: #64748b;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: #4f46e5;
+            background-color: #f1f5f9;
+        }
+
+        .tab-btn.active {
+            color: #4f46e5;
+            border-bottom-color: #4f46e5;
+            background-color: white;
+        }
+
+        /* Content */
+        .content {
+            padding: 2rem;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-control {
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        small {
+            margin-top: 0.25rem;
+            color: #6b7280;
+            font-size: 0.75rem;
+        }
+
+        /* Story Summary Cards */
+        .story-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .summary-card h3 {
+            font-size: 0.875rem;
+            font-weight: 500;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* Section Actions */
+        .section-actions {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* User Story Cards */
+        .story-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+
+        .story-card:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+        }
+
+        .story-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .story-id {
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .story-priority {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-critical {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .priority-high {
+            background-color: #fed7aa;
+            color: #9a3412;
+        }
+
+        .priority-medium {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .priority-low {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .story-content {
+            font-size: 1rem;
+            color: #374151;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 4px solid #4f46e5;
+        }
+
+        .story-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .improvement-prompts {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .improvement-prompts h4 {
+            color: #374151;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .prompt-item {
+            background: #fffbeb;
+            border: 1px solid #fed7aa;
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .prompt-item strong {
+            color: #92400e;
+        }
+
+        /* Process Details */
+        .process-section {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .process-section h3 {
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+
+        .stakeholder-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .stakeholder-tag {
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stakeholder-remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .stakeholder-remove:hover {
+            opacity: 0.7;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* File Input */
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            background-color: #059669;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+
+        .file-label:hover {
+            background-color: #047857;
+            transform: translateY(-1px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .app-container {
+                margin: 0;
+                box-shadow: none;
+            }
+            
+            header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .story-summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .tab-navigation {
+                padding: 0 1rem;
+            }
+            
+            .tab-btn {
+                padding: 0.75rem 1rem;
+            }
+            
+            .section-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            .story-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .mb-1 { margin-bottom: 0.25rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 1rem; }
+        .mt-1 { margin-top: 0.25rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-3 { margin-top: 1rem; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>User Story Tool</h1>
-        
-        <div class="tabs">
-            <button class="tab active" data-tab="create">Create</button>
-            <button class="tab" data-tab="stories">Stories</button>
-            <button class="tab" data-tab="process">Process</button>
-        </div>
+    <div class="app-container">
+        <header>
+            <h1>User Story Requirement Writing Tool</h1>
+            <div class="header-actions">
+                <label for="import-file" class="file-label">Import Project</label>
+                <input type="file" id="import-file" class="file-input" accept=".json" onchange="dataManager.importData(event)">
+                <button class="btn btn-secondary" onclick="dataManager.exportData()">Export Project</button>
+                <button class="btn btn-danger" onclick="storyManager.clearAllStories()">Clear All</button>
+            </div>
+        </header>
 
-        <!-- Create Tab -->
-        <div id="create-tab" class="tab-panel active">
-            <div class="form-group">
-                <label for="input-text">Requirement:</label>
-                <textarea id="input-text" placeholder="Enter requirement..."></textarea>
-            </div>
-            <div class="form-group">
-                <label for="user-role">User Role:</label>
-                <input type="text" id="user-role" placeholder="e.g., user, admin">
-            </div>
-            <div class="form-group">
-                <label for="priority">Priority:</label>
-                <select id="priority">
-                    <option value="low">Low</option>
-                    <option value="medium" selected>Medium</option>
-                    <option value="high">High</option>
-                    <option value="critical">Critical</option>
-                </select>
-            </div>
-            <button class="btn" onclick="storyGenerator.createStory()">Create Story</button>
-        </div>
+        <nav class="tab-navigation">
+            <button class="tab-btn active" data-tab="create-stories">Create Stories</button>
+            <button class="tab-btn" data-tab="story-overview">Story Overview</button>
+            <button class="tab-btn" data-tab="user-stories">User Stories</button>
+            <button class="tab-btn" data-tab="process-details">Process Details</button>
+        </nav>
 
-        <!-- Stories Tab -->
-        <div id="stories-tab" class="tab-panel">
-            <div id="stories-container">
-                <p>No stories yet.</p>
+        <main class="content">
+            <!-- Create Stories Tab -->
+            <div id="create-stories" class="tab-content active">
+                <h2>Create User Stories</h2>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="input-text">Requirement Description:</label>
+                        <textarea id="input-text" class="form-control" placeholder="Describe your requirement in natural language... (e.g., 'Users need to be able to reset their password when they forget it')" rows="4"></textarea>
+                        <small>Tip: Press Ctrl+Enter to quickly generate a story</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-role">User Role (optional):</label>
+                        <input type="text" id="user-role" class="form-control" placeholder="e.g., registered user, admin, customer">
+                        <small>If not specified, we'll try to extract it from your description</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="priority">Priority Level:</label>
+                        <select id="priority" class="form-control">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-primary" onclick="storyGenerator.createStory()">Generate User Story</button>
+                    <div></div>
+                </div>
             </div>
-        </div>
 
-        <!-- Process Tab -->
-        <div id="process-tab" class="tab-panel">
-            <div class="form-group">
-                <label for="project-name">Project Name:</label>
-                <input type="text" id="project-name">
+            <!-- Story Overview Tab -->
+            <div id="story-overview" class="tab-content">
+                <h2>Story Overview</h2>
+                <div class="story-summary">
+                    <div class="summary-card">
+                        <h3>Total Stories</h3>
+                        <div class="summary-number" id="totalStories">0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Critical Priority</h3>
+                        <div class="summary-number" id="criticalStories">0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>High Priority</h3>
+                        <div class="summary-number" id="highStories">0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Needs Improvement</h3>
+                        <div class="summary-number" id="improvementStories">0</div>
+                    </div>
+                </div>
+                
+                <div class="process-section">
+                    <h3>Story Quality Analysis</h3>
+                    <div id="quality-analysis">
+                        <p>Create some user stories to see quality analysis here.</p>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="stakeholder-input">Add Stakeholder:</label>
-                <input type="text" id="stakeholder-input">
-                <button class="btn" onclick="processManager.addStakeholder()">Add</button>
+
+            <!-- User Stories Tab -->
+            <div id="user-stories" class="tab-content">
+                <h2>User Stories</h2>
+                <div class="section-actions">
+                    <div>
+                        <label for="filter-priority">Filter by Priority:</label>
+                        <select id="filter-priority" class="form-control" style="width: auto; display: inline-block; margin-left: 0.5rem;" onchange="storyManager.filterStories()">
+                            <option value="">All Priorities</option>
+                            <option value="critical">Critical</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                    <div></div>
+                </div>
+                <div id="stories-container">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z"/>
+                        </svg>
+                        <h3>No user stories yet</h3>
+                        <p>Create your first user story in the "Create Stories" tab</p>
+                    </div>
+                </div>
             </div>
-            <div id="stakeholder-list"></div>
-        </div>
+
+            <!-- Process Details Tab -->
+            <div id="process-details" class="tab-content">
+                <h2>Process Details</h2>
+                
+                <div class="process-section">
+                    <h3>Project Overview</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="project-name">Project Name:</label>
+                            <input type="text" id="project-name" class="form-control" placeholder="Enter project name">
+                        </div>
+                        <div class="form-group">
+                            <label for="project-manager">Product Owner:</label>
+                            <input type="text" id="project-manager" class="form-control" placeholder="Enter product owner name">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="project-description">Project Description:</label>
+                            <textarea id="project-description" class="form-control" rows="4" placeholder="Describe the overall purpose and goals of this project..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="process-section">
+                    <h3>Target Audience</h3>
+                    <div class="form-group">
+                        <label for="target-audience">Primary Users:</label>
+                        <textarea id="target-audience" class="form-control" rows="3" placeholder="Describe who will be using this system..."></textarea>
+                    </div>
+                </div>
+
+                <div class="process-section">
+                    <h3>Stakeholders</h3>
+                    <div class="form-group">
+                        <label for="stakeholder-input">Add Stakeholder:</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="text" id="stakeholder-input" class="form-control" placeholder="Enter stakeholder name/role">
+                            <button class="btn btn-primary" onclick="processManager.addStakeholder()">Add</button>
+                        </div>
+                    </div>
+                    <div id="stakeholder-list" class="stakeholder-list"></div>
+                </div>
+
+                <div class="process-section">
+                    <h3>Success Criteria</h3>
+                    <div class="form-group">
+                        <label for="success-criteria">Define Success:</label>
+                        <textarea id="success-criteria" class="form-control" rows="3" placeholder="How will you measure the success of this project?"></textarea>
+                    </div>
+                </div>
+
+                <div class="section-actions">
+                    <button class="btn btn-primary" onclick="processManager.saveProcessDetails()">Save Process Details</button>
+                    <div></div>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <!-- Load scripts in order -->
-    <script src="js/config.js"></script>
-    <script src="js/modules/utils.js"></script>
-    <script src="js/modules/dataStore.js"></script>
-    <script src="js/modules/storyGenerator.js"></script>
-    <script src="js/modules/storyManager.js"></script>
-    <script src="js/modules/processManager.js"></script>
-    <script src="js/modules/dataManager.js"></script>
-    <script src="js/modules/tabManager.js"></script>
-    <script src="js/app.js"></script>
+    <script>
+        // Modular JavaScript Architecture
+        
+        // Utility Module
+        const utils = {
+            generateId() {
+                return 'US_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            },
+
+            formatDate(date) {
+                return new Date(date).toLocaleDateString();
+            },
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        };
+
+        // Data Storage Module
+        const dataStore = {
+            userStories: JSON.parse(localStorage.getItem('userStories') || '[]'),
+            processDetails: JSON.parse(localStorage.getItem('processDetails') || '{}'),
+
+            saveStories() {
+                localStorage.setItem('userStories', JSON.stringify(this.userStories));
+            },
+
+            saveProcessDetails() {
+                localStorage.setItem('processDetails', JSON.stringify(this.processDetails));
+            },
+
+            addStory(story) {
+                this.userStories.push(story);
+                this.saveStories();
+            },
+
+            updateStory(id, updates) {
+                const index = this.userStories.findIndex(story => story.id === id);
+                if (index !== -1) {
+                    this.userStories[index] = { ...this.userStories[index], ...updates };
+                    this.saveStories();
+                }
+            },
+
+            deleteStory(id) {
+                this.userStories = this.userStories.filter(story => story.id !== id);
+                this.saveStories();
+            },
+
+            clearAll() {
+                this.userStories = [];
+                this.saveStories();
+            }
+        };
+
+        // User Story Generator Module
+        const storyGenerator = {
+            createStory() {
+                const inputText = document.getElementById('input-text').value.trim();
+                const userRole = document.getElementById('user-role').value.trim();
+                const priority = document.getElementById('priority').value;
+
+                if (!inputText) {
+                    alert('Please enter a requirement description.');
+                    return;
+                }
+
+                const story = this.generateStructuredStory(inputText, userRole, priority);
+                dataStore.addStory(story);
+                storyManager.renderStories();
+                storyManager.updateOverview();
+                
+                // Switch to stories tab
+                tabManager.switchTab('user-stories');
+                
+                // Clear form
+                document.getElementById('input-text').value = '';
+                document.getElementById('user-role').value = '';
+                document.getElementById('priority').value = 'medium';
+            },
+
+            generateStructuredStory(inputText, userRole, priority) {
+                const id = utils.generateId();
+                const parsedStory = this.parseInputToStory(inputText, userRole);
+                const improvementPrompts = this.generateImprovementPrompts(parsedStory);
+
+                return {
+                    id,
+                    originalInput: inputText,
+                    userRole: parsedStory.user || userRole || 'user',
+                    want: parsedStory.want,
+                    benefit: parsedStory.benefit,
+                    priority,
+                    createdAt: new Date().toISOString(),
+                    improvementPrompts,
+                    isComplete: improvementPrompts.length === 0
+                };
+            },
+
+            parseInputToStory(inputText, defaultRole) {
+                const text = inputText.toLowerCase();
+                
+                // Try to extract user role
+                let user = defaultRole || 'user';
+                const userPatterns = [
+                    /as (?:a |an )?([^,]+)/i,
+                    /(?:the |a |an )?([a-zA-Z\s]+) (?:needs?|wants?|should)/i
+                ];
+                
+                for (const pattern of userPatterns) {
+                    const match = inputText.match(pattern);
+                    if (match) {
+                        user = match[1].trim();
+                        break;
+                    }
+                }
+
+                // Extract the main action/want
+                let want = inputText;
+                const wantPatterns = [
+                    /(?:i want to|i need to|should be able to|needs? to|wants? to) (.+?)(?:\s+so that|\s+in order to|\s+to enable|$)/i,
+                    /(?:able to|capability to) (.+?)(?:\s+so that|\s+in order to|\s+to enable|$)/i
+                ];
+                
+                for (const pattern of wantPatterns) {
+                    const match = inputText.match(pattern);
+                    if (match) {
+                        want = match[1].trim();
+                        break;
+                    }
+                }
+
+                // Extract benefit/so that
+                let benefit = '';
+                const benefitPatterns = [
+                    /so that (.+?)$/i,
+                    /in order to (.+?)$/i,
+                    /to enable (.+?)$/i,
+                    /(?:because|since) (.+?)$/i
+                ];
+                
+                for (const pattern of benefitPatterns) {
+                    const match = inputText.match(pattern);
+                    if (match) {
+                        benefit = match[1].trim();
+                        break;
+                    }
+                }
+
+                return { user, want, benefit };
+            },
+
+            generateImprovementPrompts(story) {
+                const prompts = [];
+
+                if (!story.benefit) {
+                    prompts.push({
+                        type: 'benefit',
+                        question: 'What is the business value or benefit of this feature?',
+                        suggestion: 'Consider adding "so that..." to explain why this is valuable.'
+                    });
+                }
+
+                if (story.want && story.want.length < 10) {
+                    prompts.push({
+                        type: 'detail',
+                        question: 'Can you provide more specific details about what the user wants to do?',
+                        suggestion: 'Add more context about the specific functionality or behavior needed.'
+                    });
+                }
+
+                if (!story.user || story.user === 'user') {
+                    prompts.push({
+                        type: 'user_role',
+                        question: 'Who specifically is the user? What is their role or context?',
+                        suggestion: 'Be more specific about the user type (e.g., "customer", "admin", "new user").'
+                    });
+                }
+
+                const vagueTerms = ['system', 'application', 'platform', 'tool'];
+                if (vagueTerms.some(term => story.want.toLowerCase().includes(term))) {
+                    prompts.push({
+                        type: 'specificity',
+                        question: 'Can you be more specific about what exactly the user needs to accomplish?',
+                        suggestion: 'Replace general terms with specific actions or outcomes.'
+                    });
+                }
+
+                return prompts;
+            }
+        };
+
+        // Story Management Module
+        const storyManager = {
+            renderStories(filter = '') {
+                const container = document.getElementById('stories-container');
+                let stories = dataStore.userStories;
+
+                // Apply filter
+                if (filter) {
+                    stories = stories.filter(story => story.priority === filter);
+                }
+
+                if (stories.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z"/>
+                            </svg>
+                            <h3>No user stories found</h3>
+                            <p>${filter ? `No stories found with ${filter} priority` : 'Create your first user story in the "Create Stories" tab'}</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = stories.map(story => this.renderStoryCard(story)).join('');
+            },
+
+            renderStoryCard(story) {
+                const storyText = `As a ${story.userRole}, I want to ${story.want}${story.benefit ? `, so that ${story.benefit}` : ''}.`;
+                
+                return `
+                    <div class="story-card">
+                        <div class="story-header">
+                            <span class="story-id">${story.id}</span>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span class="story-priority priority-${story.priority}">${story.priority}</span>
+                                <span style="font-size: 0.75rem; color: #6b7280;">
+                                    ${utils.formatDate(story.createdAt)}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="story-content">
+                            ${utils.escapeHtml(storyText)}
+                        </div>
+                        
+                        <div class="story-actions">
+                            <button class="btn btn-small btn-primary" onclick="storyManager.editStory('${story.id}')">Edit</button>
+                            <button class="btn btn-small btn-danger" onclick="storyManager.deleteStory('${story.id}')">Delete</button>
+                        </div>
+
+                        ${story.improvementPrompts && story.improvementPrompts.length > 0 ? `
+                            <div class="improvement-prompts">
+                                <h4>💡 Improvement Suggestions:</h4>
+                                ${story.improvementPrompts.map(prompt => `
+                                    <div class="prompt-item">
+                                        <strong>${prompt.question}</strong><br>
+                                        <span style="color: #6b7280;">${prompt.suggestion}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            },
+
+            editStory(id) {
+                const story = dataStore.userStories.find(s => s.id === id);
+                if (!story) return;
+
+                const newUserRole = prompt('User Role:', story.userRole);
+                const newWant = prompt('I want to:', story.want);
+                const newBenefit = prompt('So that:', story.benefit || '');
+
+                if (newUserRole !== null && newWant !== null) {
+                    dataStore.updateStory(id, {
+                        userRole: newUserRole || story.userRole,
+                        want: newWant || story.want,
+                        benefit: newBenefit || story.benefit
+                    });
+                    this.renderStories();
+                    this.updateOverview();
+                }
+            },
+
+            deleteStory(id) {
+                if (confirm('Are you sure you want to delete this user story?')) {
+                    dataStore.deleteStory(id);
+                    this.renderStories();
+                    this.updateOverview();
+                }
+            },
+
+            clearAllStories() {
+                if (confirm('Are you sure you want to delete all user stories? This cannot be undone.')) {
+                    dataStore.clearAll();
+                    this.renderStories();
+                    this.updateOverview();
+                }
+            },
+
+            filterStories() {
+                const filter = document.getElementById('filter-priority').value;
+                this.renderStories(filter);
+            },
+
+            updateOverview() {
+                const stories = dataStore.userStories;
+                
+                // Update summary cards
+                document.getElementById('totalStories').textContent = stories.length;
+                document.getElementById('criticalStories').textContent = stories.filter(s => s.priority === 'critical').length;
+                document.getElementById('highStories').textContent = stories.filter(s => s.priority === 'high').length;
+                document.getElementById('improvementStories').textContent = stories.filter(s => s.improvementPrompts.length > 0).length;
+                
+                // Update quality analysis
+                const qualityAnalysis = this.generateQualityAnalysis(stories);
+                document.getElementById('quality-analysis').innerHTML = qualityAnalysis;
+            },
+
+            generateQualityAnalysis(stories) {
+                if (stories.length === 0) {
+                    return '<p>Create some user stories to see quality analysis here.</p>';
+                }
+
+                const completeStories = stories.filter(s => s.isComplete).length;
+                const incompleteStories = stories.length - completeStories;
+                const completionRate = Math.round((completeStories / stories.length) * 100);
+
+                const commonIssues = {
+                    missingBenefit: stories.filter(s => !s.benefit).length,
+                    vagueUserRole: stories.filter(s => !s.userRole || s.userRole === 'user').length,
+                    shortDescription: stories.filter(s => s.want.length < 10).length
+                };
+
+                return `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 6px;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #059669;">${completionRate}%</div>
+                            <div style="font-size: 0.75rem; color: #6b7280;">Completion Rate</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 6px;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #4f46e5;">${completeStories}</div>
+                            <div style="font-size: 0.75rem; color: #6b7280;">Complete Stories</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: white; border-radius: 6px;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #dc2626;">${incompleteStories}</div>
+                            <div style="font-size: 0.75rem; color: #6b7280;">Need Improvement</div>
+                        </div>
+                    </div>
+                    
+                    ${incompleteStories > 0 ? `
+                        <div style="margin-top: 1rem;">
+                            <h4 style="margin-bottom: 0.5rem; color: #374151;">Common Issues to Address:</h4>
+                            <ul style="margin-left: 1rem; color: #6b7280;">
+                                ${commonIssues.missingBenefit > 0 ? `<li>${commonIssues.missingBenefit} stories missing business value</li>` : ''}
+                                ${commonIssues.vagueUserRole > 0 ? `<li>${commonIssues.vagueUserRole} stories with vague user roles</li>` : ''}
+                                ${commonIssues.shortDescription > 0 ? `<li>${commonIssues.shortDescription} stories need more detail</li>` : ''}
+                            </ul>
+                        </div>
+                    ` : '<p style="color: #059669; font-weight: 500;">🎉 All stories are well-structured!</p>'}
+                `;
+            }
+        };
+
+        // Process Management Module
+        const processManager = {
+            init() {
+                this.loadProcessDetails();
+                this._bindEvents();
+            },
+
+            loadProcessDetails() {
+                const details = dataStore.processDetails;
+                
+                const elements = {
+                    'project-name': details.projectName || '',
+                    'project-manager': details.projectManager || '',
+                    'project-description': details.projectDescription || '',
+                    'target-audience': details.targetAudience || '',
+                    'success-criteria': details.successCriteria || ''
+                };
+
+                for (const [id, value] of Object.entries(elements)) {
+                    const element = document.getElementById(id);
+                    if (element) element.value = value;
+                }
+                
+                this.renderStakeholders();
+            },
+
+            saveProcessDetails() {
+                const details = {
+                    projectName: document.getElementById('project-name')?.value || '',
+                    projectManager: document.getElementById('project-manager')?.value || '',
+                    projectDescription: document.getElementById('project-description')?.value || '',
+                    targetAudience: document.getElementById('target-audience')?.value || '',
+                    successCriteria: document.getElementById('success-criteria')?.value || '',
+                    stakeholders: dataStore.processDetails.stakeholders || []
+                };
+
+                dataStore.processDetails = details;
+                dataStore.saveProcessDetails();
+                
+                alert('Process details saved successfully!');
+            },
+
+            addStakeholder() {
+                const input = document.getElementById('stakeholder-input');
+                if (!input) return;
+                
+                const stakeholder = input.value.trim();
+                
+                if (!stakeholder) return;
+
+                if (!dataStore.processDetails.stakeholders) {
+                    dataStore.processDetails.stakeholders = [];
+                }
+
+                if (!dataStore.processDetails.stakeholders.includes(stakeholder)) {
+                    dataStore.processDetails.stakeholders.push(stakeholder);
+                    this.renderStakeholders();
+                    input.value = '';
+                }
+            },
+
+            renderStakeholders() {
+                const container = document.getElementById('stakeholder-list');
+                if (!container) return;
+                
+                const stakeholders = dataStore.processDetails.stakeholders || [];
+                
+                container.innerHTML = stakeholders.map(stakeholder => `
+                    <span class="stakeholder-tag">
+                        ${utils.escapeHtml(stakeholder)}
+                        <span class="stakeholder-remove" onclick="processManager.removeStakeholder('${stakeholder}')">×</span>
+                    </span>
+                `).join('');
+            },
+
+            removeStakeholder(stakeholder) {
+                if (!dataStore.processDetails.stakeholders) return;
+                
+                dataStore.processDetails.stakeholders = dataStore.processDetails.stakeholders.filter(s => s !== stakeholder);
+                this.renderStakeholders();
+            },
+
+            _bindEvents() {
+                const stakeholderInput = document.getElementById('stakeholder-input');
+                if (stakeholderInput) {
+                    stakeholderInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            this.addStakeholder();
+                        }
+                    });
+                }
+            }
+        };
+
+        // Data Import/Export Module
+        const dataManager = {
+            exportData() {
+                const exportData = {
+                    userStories: dataStore.userStories,
+                    processDetails: dataStore.processDetails,
+                    exportedAt: new Date().toISOString(),
+                    version: '1.0'
+                };
+
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `user-stories-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            },
+
+            importData(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importData = JSON.parse(e.target.result);
+                        
+                        if (confirm('This will replace all existing data. Are you sure?')) {
+                            if (importData.userStories) {
+                                dataStore.userStories = importData.userStories;
+                                dataStore.saveStories();
+                            }
+                            
+                            if (importData.processDetails) {
+                                dataStore.processDetails = importData.processDetails;
+                                dataStore.saveProcessDetails();
+                            }
+                            
+                            // Refresh all views
+                            storyManager.renderStories();
+                            storyManager.updateOverview();
+                            processManager.loadProcessDetails();
+                            
+                            alert('Project imported successfully!');
+                        }
+                    } catch (error) {
+                        alert('Error importing file: Invalid JSON format');
+                        console.error('Import error:', error);
+                    }
+                };
+                reader.readAsText(file);
+                
+                // Reset file input
+                event.target.value = '';
+            }
+        };
+
+        // Tab Management Module
+        const tabManager = {
+            init() {
+                document.querySelectorAll('.tab-btn').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        const tabName = e.target.getAttribute('data-tab');
+                        this.switchTab(tabName);
+                    });
+                });
+            },
+
+            switchTab(tabName) {
+                // Remove active class from all tabs and panels
+                document.querySelectorAll('.tab-btn').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(panel => panel.classList.remove('active'));
+                
+                // Add active class to selected tab and panel
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+                document.getElementById(tabName).classList.add('active');
+                
+                // Update overview when switching to story overview tab
+                if (tabName === 'story-overview') {
+                    storyManager.updateOverview();
+                }
+            }
+        };
+
+        // Application Initialization
+        const app = {
+            init() {
+                tabManager.init();
+                processManager.init();
+                storyManager.renderStories();
+                storyManager.updateOverview();
+                
+                // Add enter key listener for main input
+                document.getElementById('input-text').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && e.ctrlKey) {
+                        storyGenerator.createStory();
+                    }
+                });
+                
+                console.log('User Story Tool initialized successfully');
+            }
+        };
+
+        // Initialize application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', app.init);
+    </script>
 </body>
 </html>
