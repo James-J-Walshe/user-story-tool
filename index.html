@@ -3,13 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Story Requirement Writing Tool</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>User Story Tool</title>
+    <style>
+        /* Inline styles for quick testing - replace with external CSS later */
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .tab { padding: 10px 20px; margin: 5px; border: 1px solid #ccc; cursor: pointer; }
+        .tab.active { background: #007bff; color: white; }
+        .tab-panel { display: none; padding: 20px; }
+        .tab-panel.active { display: block; }
+        .btn { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; }
+        input, textarea { width: 100%; padding: 8px; margin-bottom: 10px; }
+    </style>
 </head>
 <body>
-    <!-- HTML content here -->
-    
-    <!-- Load modules in correct order -->
+    <div class="container">
+        <h1>User Story Tool</h1>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="create">Create</button>
+            <button class="tab" data-tab="stories">Stories</button>
+            <button class="tab" data-tab="process">Process</button>
+        </div>
+
+        <!-- Create Tab -->
+        <div id="create-tab" class="tab-panel active">
+            <div class="form-group">
+                <label for="input-text">Requirement:</label>
+                <textarea id="input-text" placeholder="Enter requirement..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="user-role">User Role:</label>
+                <input type="text" id="user-role" placeholder="e.g., user, admin">
+            </div>
+            <div class="form-group">
+                <label for="priority">Priority:</label>
+                <select id="priority">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                </select>
+            </div>
+            <button class="btn" onclick="storyGenerator.createStory()">Create Story</button>
+        </div>
+
+        <!-- Stories Tab -->
+        <div id="stories-tab" class="tab-panel">
+            <div id="stories-container">
+                <p>No stories yet.</p>
+            </div>
+        </div>
+
+        <!-- Process Tab -->
+        <div id="process-tab" class="tab-panel">
+            <div class="form-group">
+                <label for="project-name">Project Name:</label>
+                <input type="text" id="project-name">
+            </div>
+            <div class="form-group">
+                <label for="stakeholder-input">Add Stakeholder:</label>
+                <input type="text" id="stakeholder-input">
+                <button class="btn" onclick="processManager.addStakeholder()">Add</button>
+            </div>
+            <div id="stakeholder-list"></div>
+        </div>
+    </div>
+
+    <!-- Load scripts in order -->
     <script src="js/config.js"></script>
     <script src="js/modules/utils.js"></script>
     <script src="js/modules/dataStore.js"></script>
